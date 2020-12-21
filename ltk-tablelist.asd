@@ -11,8 +11,8 @@
   :in-order-to ((test-op (test-op "ltk-tablelist/tests"))))
 
 (defsystem "ltk-tablelist/tests"
-  :author ""
-  :license ""
+  :author "Ulrich Vollert <lisp@ulrivo.de>"
+  :license "MIT"
   :depends-on ("ltk-tablelist"
                "rove")
   :components ((:module "tests"
