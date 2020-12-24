@@ -6,8 +6,9 @@
   :serial nil
   :components ((:module "src"
                 :components
-                ((:file "main"))))
-  :description "LTK extension for the TK-widget tablelist."
+                ((:file "package")
+                 (:file "main" :depends-on ("package")))))
+  :description "LTK extension for the TK-widget tablelist"
   :in-order-to ((test-op (test-op "ltk-tablelist/tests"))))
 
 (defsystem "ltk-tablelist/tests"
