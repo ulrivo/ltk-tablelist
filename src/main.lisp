@@ -27,33 +27,34 @@
 
 ;; scrolled-tablelist
 
-(defun make-scrollbar (master &key (orientation "vertical"))
-  (make-instance 'scrollbar :master master :orientation orientation))
-
 (defclass scrolled-tablelist (frame)
   ((tablelist   :accessor tablelist)
    (vscroll     :accessor vscroll)))
 
 (defmethod initialize-instance :after ((stl scrolled-tablelist) &key columns width)
   (setf (tablelist stl) (make-instance 'tablelist :master stl :width width :columns columns))
-  (setf (vscroll   stl) (make-scrollbar stl :orientation "vertical"))
+  (setf (vscroll   stl) (make-instance 'scrollbar :master stl :orientation "vertical"))
   (pack (tablelist stl) :side :left)
   (pack (vscroll   stl) :side :left :fill :y)
   (configure (vscroll   stl) "command" (format nil "~a yview" (widget-path (tablelist stl))))
   (configure (tablelist stl) "yscrollcommand"
              (format nil "~a set" (widget-path (vscroll stl)))))
 
+(defgeneric scrolled-tablelist-insert (stl index &rest items))
+
+(defmethod scrolled-tablelist-insert ((stl scrolled-tablelist) index &rest items)
+  (apply #'tablelist-insert (tablelist stl) index items))
+
 (defun main ()
   (setf *debug-tk* t)
   (with-ltk ()
     (let* ((f   (make-instance 'frame :width 50))
-           (tbl (make-instance 'scrolled-tablelist
+           (stbl (make-instance 'scrolled-tablelist
                                :master f
                                :width  40
                                :columns '(25 "Name" 15 "Geburtsdatum"))))
-      ;; (tablelist-insert tbl "end" '("Ulrich Vollert" "06.01.1957") '("Laura Vollert"  "11.10.2013"))
-      (tablelist-insert (tablelist tbl) "end" '("Sabine Vollert" "08.01.1956"))
+      (scrolled-tablelist-insert stbl "end" '("Sabine Vollert" "08.01.1956"))
       (dotimes (i 20)
-        (tablelist-insert (tablelist tbl) "end" (list "Freddy" i)))
+        (scrolled-tablelist-insert stbl "end" (list "Freddy" i)))
       (pack f)
-      (pack tbl))))
+      (pack stbl))))
